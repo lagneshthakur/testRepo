@@ -1,0 +1,50 @@
+
+<style>
+  #sortable {list-style-type: none;}
+  #sortable li { margin-left: -1.3em; border: 1px solid gray; padding: 10px; }
+</style>
+<script>
+  $(function() {
+    var surveyId = '<%= @survey.id %>';
+    var pickedQuestionNumber;
+    var targetQuestionNumber;
+    $( "#sortable" ).sortable({
+      start: function( event, ui ) {
+        console.log("start : " + ui.item.index());
+        pickedQuestionNumber = ui.item.index();
+      },
+      update: function( event, ui ) {
+        console.log("end : " + ui.item.index());
+        targetQuestionNumber = ui.item.index();
+        var questionId = $(ui.item[0]).attr("question-id");
+        $.ajax({
+           type: "POST",
+           url: "/surveys/" + surveyId + "/change_questions_order",
+           data: { picked_question_number: pickedQuestionNumber, target_question_number: targetQuestionNumber, question_id: questionId } 
+        }).done(function( msg ) {
+
+          alert( "Data Saved: " + msg );
+        });
+      }
+    });
+    $( "#sortable" ).disableSelection();
+  });
+</script>
+
+<ul id="sortable">
+  <li>
+    <div style="float:left;width:10%;text-align:center;"><b>Serial Number</b></div>
+    <div style="float:left;width:90%;text-align:center;"><b>Description</b></div>
+    <div style="clear:both"></div>
+  </li>
+  <% @survey.questions.order("question_number").each do |question| %>
+    <li class="ui-state-default" question-number=<%= question.question_number %> question-id=<%= question.id %>>
+      <div style="float:left;width:10%;"><%= question.question_number %></div>
+      <div class="ui-icon ui-icon-arrowthick-2-n-s" style="width:90%;float:left;">
+          <%= link_to question.description, edit_survey_question_path(:survey_id => @survey.id, :question_id => question.id) %><%= question.question_number %>
+      </div>
+      <div style="clear:both"></div>
+    </li>
+  <% end %>
+</ul>
+

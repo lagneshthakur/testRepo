@@ -1,0 +1,83 @@
+<div class="header">
+  <h1><%=@survey.title%></h1>
+</div>
+  <p style="width:80%;">
+    <span class="question">Question <%=@question.question_number%> : </span> <br/><br/>
+    <%= @question.description %>
+  </p>
+  <br/>
+    <%= form_for :user_answer, url: user_answers_path, :html => {:id => "thisForm"} do |f| %>
+      <% @question.answers.each_with_index do |answer| %>
+    <p id="answers">
+      <%= radio_button_tag(:answer_id, answer.id,false,:class=>"radiocheck") %>
+      <%= answer.description %>
+    </p>
+      <% end %>
+      <%= hidden_field_tag :survey_id, @survey.id %>
+      <%= hidden_field_tag :question_id, @question.id %>
+      <%= hidden_field_tag :question_number, @question.question_number %>
+      <%= hidden_field_tag :count, @survey.questions.count %>
+      <%= hidden_field_tag :user_survey_id, @user_survey_id %>
+      <%= hidden_field_tag :user_id, 1 %>
+
+    <p id="submit">
+      <input type="button" value="Exit Survey" onclick="exitSurvey()" />
+      <% if(@question.question_number < @survey.questions.count) %>
+      <input type="button" value="Next" onclick="valRadio()" />
+      <% else %>
+      <input type="button" value="Submit" onclick="valRadio()" />
+      <% end %> 
+    </p>
+    <% end %>
+    <div class="pages">
+    </div>
+  <br/>
+  <script type="text/javascript">
+  var formsubmit=false;
+  function exitSurvey () {
+    // body...
+    formsubmit=true;
+    window.location = '<%= "/surveys" %>';
+  }
+
+  function valRadio () {
+      if($('input[class=radiocheck]:checked').length<=0)
+    {
+     alert("▬▬▬▬▬▬▬▬▬ஜ۩۞۩ஜ▬▬▬▬▬▬▬▬▬\n\tNo answer selected\n\tPlease select an answer\n \▬▬▬▬▬▬▬▬▬ஜ۩۞۩ஜ▬▬▬▬▬▬▬▬▬\n");
+     return false;
+    }
+    else
+      formsubmit=true;
+      document.getElementById("thisForm").submit();
+      return true;
+    }
+
+    $(function() {
+    $('.pages').pagination({
+        items: "<%= @survey.questions.count.to_i%>",
+        itemsOnPage: 1,
+        cssStyle: 'light-theme',
+        currentPage: "<%= @question.question_number.to_i%>",
+        prevText : "",
+        nextText : ""
+    });
+    });
+
+    $(function() {
+    $('.pages').pagination('disable');
+    $('.pages').find("li:nth-child(<%= @question.question_number.to_i%>) span").removeClass("current");
+    });
+
+ $(window).bind('beforeunload', function(){
+  if(formsubmit===false)
+    { 
+      return "Msg";
+    }
+  });
+
+ $(window).on('unload', function(){
+  if(formsubmit===false)
+  window.location = '<%= "/surveys/#{@survey.id}/questions/#{@survey.questions.first.id}" %>';
+  });
+
+  </script>

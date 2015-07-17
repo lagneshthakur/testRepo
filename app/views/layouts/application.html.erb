@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Questionnaire</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+
+  <script type="text/javascript" src="/assets/jquery.simplePagination.js"></script>
+  <link rel="stylesheet" type="text/css" href="/assets/simplePagination.css">
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>

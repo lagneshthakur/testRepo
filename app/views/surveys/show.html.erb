@@ -1,0 +1,10 @@
+<div class="header">
+  <h1><%= @survey.title %></h1>
+</div>
+ <span><%= @survey.description %></span>
+  <div>
+    <p class="link"><%= link_to "Start Survey", survey_question_path(:survey_id => @survey.id, :id => @first_question.id) %></p>
+    <p class="edit"><%= link_to "Edit", edit_survey_path(:survey_id => @survey.id) %> </p>
+  </div>
+ 
+ <p class="link"><%= link_to 'Back', surveys_path %></p>

@@ -1,0 +1,61 @@
+<div class="header">
+  <h1>New Survey</h1>
+</div>
+<%= javascript_include_tag :defaults, "nested_form" %>
+<%= nested_form_for @survey, url: surveys_path do |f| %> 
+<div class="container">
+    <div class="row">
+      <div class="col-6">
+        <%= f.label :title %> 
+      </div> 
+      <div class="col-6">
+        <%= f.text_field :title %>
+      </div> 
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <%= f.label :description %>
+      </div> 
+      <div class="col-6">
+        <%= f.text_area :description %>
+      </div> 
+    </div>
+
+    <%= f.fields_for :questions do |fq| %>
+      <div class="row">
+        <div class="col-6">
+          <%= fq.label :Question %>
+        </div> 
+        <div class="col-6">
+          <%= fq.text_field :description %>
+        </div> 
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <%= fq.label :QuestionNumber %>
+        </div> 
+        <div class="col-6">
+          <%= fq.text_field :question_number %>
+        </div> 
+      </div>
+      <%= fq.fields_for :answers do |fa| %>
+        <div class="row">
+          <div class="col-6">
+            <%= fa.label :Answer %>
+          </div> 
+          <div class="col-6">
+            <%= fa.text_field :description %>
+          </div> 
+        </div>
+      <%= fa.link_to_remove "Remove Answer" %>
+    <% end %>
+    <%= fq.link_to_add "Add an Answer", :answers %>
+    <br/>
+    <%= fq.link_to_remove "Remove Question" %>
+    <% end %>
+    <%= f.link_to_add "Add a Question", :questions %>
+    <br/> <br/>
+    <%= f.submit %>
+</div>
+<% end %> 
+<p class="link"><%= link_to 'Back', surveys_path %></p>

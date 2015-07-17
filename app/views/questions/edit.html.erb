@@ -1,0 +1,45 @@
+<div class="header">
+  <h1><%=@survey.title%></h1>
+</div>
+  <p style="width:80%;">
+    <span class="question">Question <%=@question.question_number%> : </span> <br/><br/>
+    <%= best_in_place @question, :description,:skip_blur=>true,:html_attrs => { :style => 'width:1000px;' },:path => survey_question_path%>
+  </p>
+  <br/>
+
+      <% @question.answers.each_with_index do |answer| %>
+    <p id="answers">
+      <%= radio_button_tag(:answer_id, answer.id,false,:class=>"radiocheck") %>
+      <%= best_in_place answer, :description ,:path => survey_question_answer_path(:question_id => @question.id, :id => answer.id)%>
+    </p>
+      <% end %>
+      <%= hidden_field_tag :survey_id, @survey.id %>
+      <%= hidden_field_tag :question_id, @question.id %>
+      <%= hidden_field_tag :question_number, @question.question_number %>
+      <%= hidden_field_tag :count, @survey.questions.count %>
+      <%= hidden_field_tag :user_survey_id, @user_survey_id %>
+      <%= hidden_field_tag :user_id, 1 %>
+    <div class="pages">
+    </div>
+
+  <br/>
+  <script type="text/javascript">
+
+    $(function() {
+    $('.pages').pagination({
+        items: "<%= @survey.questions.count.to_i%>",
+        itemsOnPage: 1,
+        cssStyle: 'light-theme',
+        currentPage: "<%= @question.question_number.to_i%>",
+        prevText : "",
+        nextText : ""
+    });
+    });
+
+    $(function() {
+    $('.pages').pagination('disable');
+    $('.pages').find("li:nth-child(<%= @question.question_number.to_i%>) span").removeClass("current");
+    });
+
+
+  </script>
